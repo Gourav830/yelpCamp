@@ -7,7 +7,11 @@ const Campground = require('./models/capmgroung');
 const methodOverride = require('method-override');
 const cathcAsync = require('./utils/catchAsunc')
 const ExpressError = require('./utils/ExpressError');
+const {campgroundSchema}=require('./schemas');
+
+
 const { status } = require('init');
+const { error } = require('console');
 app.use(express.urlencoded({ extended: true}));
 app.use(methodOverride('_method'));
 async function main()
@@ -22,14 +26,29 @@ app.set('views',path.join(__dirname,'views'));
 app.set('view engine','ejs');
 app.engine('ejs',ejsMate);
 
+const validateCampground= (req,res,next)=>{
+
+
+        const {error} =campgroundSchema.validate(req.body)
+        if(error){
+            const msg =error.details.map(el=>el.message).join(',')
+        throw new ExpressError(msg,400)
+        }else{
+            next();
+        }
+        // console.log(error)
+
+}
+
+
 app.get('/',(req,res)=>{
     res.render('home')
 })
-app.get('/campgrounds',async (req,res)=>{
+app.get('/campgrounds',cathcAsync(async (req,res)=>{
     const campgrounds = await Campground.find({});
     res.render('campgrounds/index',{campgrounds});
 
-})
+}))
 
 app.get('/campgrounds/new',(req,res)=>{
     res.render('campgrounds/new')
@@ -53,17 +72,15 @@ app.get('/campgrounds/:id/edit',cathcAsync(async (req,res)=>{
 // res.send(camp);
 
 // })
-app.post('/campgrounds',cathcAsync(async (req,res,next)=>{
-
-if(!req.body.campground)throw new ExpressError('Invalid camp DATA',400)
+app.post('/campgrounds',validateCampground,cathcAsync(async (req,res,next)=>{
+// if(!req.body.campground)throw new ExpressError('Invalid camp DATA',400)
 const campground = new Campground(req.body.campground);
 await campground.save();
 res.redirect(`/campgrounds/${campground._id}`);
 
-next(e);
 })
 )
-app.put('/campgrounds/:id',cathcAsync(async (req,res,next)=>{
+app.put('/campgrounds/:id',validateCampground,cathcAsync(async (req,res,next)=>{
 
     const { id } = req.params;
 
