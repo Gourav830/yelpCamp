@@ -7,11 +7,12 @@ const Campground = require('./models/capmgroung');
 const methodOverride = require('method-override');
 const cathcAsync = require('./utils/catchAsunc')
 const ExpressError = require('./utils/ExpressError');
-const {campgroundSchema}=require('./schemas');
-
+const {campgroundSchema,reviewSchema}=require('./schemas');
+const Review =require('./models/review')
 
 const { status } = require('init');
 const { error } = require('console');
+const catchAsunc = require('./utils/catchAsunc');
 app.use(express.urlencoded({ extended: true}));
 app.use(methodOverride('_method'));
 async function main()
@@ -40,6 +41,15 @@ const validateCampground= (req,res,next)=>{
 
 }
 
+const validateReview =(req,res,next)=>{
+const {error} = reviewSchema.validate(req.body);
+if(error){
+    const msg =error.details.map(el=>el.message).join(',')
+throw new ExpressError(msg,400)
+}else{
+    next();
+}
+}
 
 app.get('/',(req,res)=>{
     res.render('home')
@@ -56,7 +66,8 @@ app.get('/campgrounds/new',(req,res)=>{
 
 
 app.get('/campgrounds/:id',cathcAsync(async (req,res)=>{
-   const campground = await Campground.findById(req.params.id);
+   const campground = await Campground.findById(req.params.id).populate('reviews');
+
 
     res.render('campgrounds/show',{campground});
 }))
@@ -95,6 +106,27 @@ app.delete('/campgrounds/:id',cathcAsync(async (req,res)=>{
     await Campground.findByIdAndDelete(id);
     res.redirect('/campgrounds');
 }))
+
+app.post('/campgrounds/:id/reviews',validateReview,cathcAsync(async (req,res)=>{
+const {id} = req.params
+
+    const newReview = await Campground.findById(id)
+    const review = new Review(req.body.review);
+    newReview.reviews.push(review);
+    await review.save();
+    await newReview.save();
+    res.redirect(`/campgrounds/${newReview._id}`);
+
+}))
+app.delete('/campgrounds/:id/reviews/:reviewId',cathcAsync(async (req,res)=>{
+    const {id,reviewId} = req.params;
+    await Campground.findByIdAndUpdate(id,{$pull:{reviews:reviewId}})
+
+    await Review.findByIdAndDelete(reviewId);
+    res.redirect(`/campgrounds/${id}`)
+
+}))
+
 
 app.all('*',(req,res,next)=>{
         next(new ExpressError('Page Not Found',404))
