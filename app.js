@@ -5,16 +5,16 @@ const mongoose = require('mongoose');
 const ejsMate = require('ejs-mate');
 const Campground = require('./models/capmgroung');
 const methodOverride = require('method-override');
-const ExpressError = require('./utils/ExpressError');
-const {campgroundSchema,reviewSchema}=require('./schemas');
-const Review =require('./models/review');
-const { status } = require('init');
-const { error } = require('console');
-const catchAsunc = require('./utils/catchAsunc');
-const campgroun = require('./routes/campgorunds');
-const reviews = require('./routes/review');
 const session = require('express-session');
 const flash=require('connect-flash')
+const passport = require('passport');
+const LocalStrategy = require('passport-local')
+const User = require('./models/user')
+
+const userRoutes = require('./routes/user')
+const campgroundRoutes = require('./routes/campgorunds');
+const reviewsRoutes = require('./routes/review');
+
 async function main(){
     await mongoose.connect('mongodb://127.0.0.1:27017/yelpCamp123');
       console.log("CONNECTION OPEN to mongoose");
@@ -36,6 +36,10 @@ maxAge:1000*60*60*24*7
 }
 app.use(session(sessionConfig))
 app.use(flash())
+app.use(passport.initialize());
+app.use(passport.session())
+passport.use(new LocalStrategy(User.authenticate()))
+passport.serializeUser(User.serializeUser())
 
 app.set('views',path.join(__dirname,'views'));
 app.set('view engine','ejs');
@@ -46,9 +50,20 @@ app.use((req,res,next) =>{
     res.locals.error =  req.flash('error')
     next()
 })
+app.get('/fakeUser',async (req,res)=>{
+const user= new user({
+    email:'singlaji1323@gmail.com',
+    username:'singlaji',
 
-app.use('/campgrounds',campgroun);
-app.use('/campgrounds/:id/reviews',reviews);
+})
+const newUser =await User.register(user,'qwerty');
+res.send(newUser)
+})
+app.use('/',userRoutes);
+app.use('/campgrounds',campgroundRoutes);
+app.use('/campgrounds/:id/reviews',reviewsRoutes);
+
+
 app.get('/',(req,res)=>{
     res.render('home')
 })
