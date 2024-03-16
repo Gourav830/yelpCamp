@@ -4,6 +4,7 @@ const catchAsync = require('../utils/catchAsunc')
 const ExpressError = require('../utils/ExpressError');
 const Campground = require('../models/capmgroung');
 const {campgroundSchema}=require('../schemas');
+const {isloggedin} = require('./middleware');
 
 const validateCampground= (req,res,next)=>{
 
@@ -24,11 +25,8 @@ router.get('/',catchAsync(async (req,res)=>{
 
 }))
 
-router.get('/new',(req,res)=>{
-// if(!req.isAuthenticated()){
-// req.flash('error','you must be signed in');
-// res.redirect('/login')
-// }
+router.get('/new',isloggedin,(req,res)=>{
+
     res.render('campgrounds/new')
 })
 
@@ -58,7 +56,7 @@ router.get('/:id/edit',catchAsync(async (req,res)=>{
 // res.send(camp);
 
 // })
-router.post('/',validateCampground,catchAsync(async (req,res,next)=>{
+router.post('/',isloggedin,validateCampground,catchAsync(async (req,res,next)=>{
 // if(!req.body.campground)throw new ExpressError('Invalid camp DATA',400)
 const campground = new Campground(req.body.campground);
 await campground.save();
@@ -67,7 +65,7 @@ res.redirect(`/campgrounds/${campground._id}`);
 
 })
 )
-router.put('/:id',validateCampground,catchAsync(async (req,res,next)=>{
+router.put('/:id',isloggedin,validateCampground,catchAsync(async (req,res,next)=>{
 
     const { id } = req.params;
 
@@ -79,7 +77,7 @@ router.put('/:id',validateCampground,catchAsync(async (req,res,next)=>{
     // next(e)
 }));
 
-router.delete('/:id',catchAsync(async (req,res)=>{
+router.delete('/:id',isloggedin,catchAsync(async (req,res)=>{
     const {id} = req.params;
     await Campground.findByIdAndDelete(id);
     req.flash('success',`successfully deleted the  campground`)
