@@ -5,7 +5,7 @@ const User = require('../models/user');
 const session = require('express-session')
 // const flash = require('connect-flash')
 const passport = require('passport');
-const { isloggedin } = require('./middleware');
+const { isloggedin } = require('../middleware');
 
 
 router.get('/register',(req,res)=>{

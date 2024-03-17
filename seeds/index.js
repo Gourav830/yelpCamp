@@ -2,23 +2,24 @@ const mongoose = require('mongoose');
 const Campground = require('../models/capmgroung');
 const cities = require('./cities');
 const {places,descriptors} = require('./seedHelpers')
-async function main() 
+async function main()
 {
     await mongoose.connect('mongodb://127.0.0.1:27017/yelpCamp123');
       console.log("CONNECTION OPEN to mongoose");
   }
- 
-  
+
+
   main().catch(err => console.log("Error occuredd"));
-  
+
   const sample = (array)=>    array[Math.floor(Math.random() * array.length)];
-  
+
   const seedDB = async ()=>{
     await Campground.deleteMany({});
    for(let i=0;i<50;i++){
     const price = Math.floor(Math.random()*40);
     const random1000 = Math.floor(Math.random()*1000);
   const newCamp =  new Campground({
+    author : '65f55c7241b4d7ea3ad98eec',
     location : `${cities[random1000].city},${cities[random1000].state}`,
     title:`${sample(descriptors)} ${sample(places)}`,
     image:'https://source.unsplash.com/collection/483251',
