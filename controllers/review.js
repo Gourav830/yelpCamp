@@ -20,5 +20,4 @@ module.exports.DeleteReview =async (req,res)=>{
     await Review.findByIdAndDelete(reviewId);
     req.flash('success',`successfully deleted the review `)
     res.redirect(`/campgrounds/${id}`)
-
 }

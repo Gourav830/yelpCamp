@@ -4,11 +4,19 @@ const catchAsync = require('../utils/catchAsunc')
 const ExpressError = require('../utils/ExpressError');
 const Campground = require('../models/capmgroung');
 const campgrounds = require('../controllers/campgrounds');
+const multer  = require('multer')
+const {storage} = require('../coludinary')
+const upload = multer({ storage })
 
 const {isloggedin,validateCampground,isAuthor} = require('../middleware');
 router.route('/')
-.get(catchAsync(campgrounds.index))
-.post(isloggedin,validateCampground,catchAsync(campgrounds.createNew))
+    .get(catchAsync(campgrounds.index))
+    .post(isloggedin,upload.array('image'),validateCampground,catchAsync(campgrounds.createNew))
+// .post(upload.array('image'),(req,res)=>{
+
+//     console.log(req.body,req.files);
+//     res.send('IT works')
+// })
 
 router.get('/new',isloggedin,campgrounds.new)
 

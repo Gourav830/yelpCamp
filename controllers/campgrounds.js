@@ -43,9 +43,16 @@ module.exports.renderEdit = async (req,res)=>{
     }
 module.exports.createNew =async (req,res,next)=>{
         // if(!req.body.campground)throw new ExpressError('Invalid camp DATA',400)
-        const campground = new Campground(req.body.campground);
+    console.log(req.files)
+            const campground = new Campground(req.body.campground);
+
+            campground.image = req.files.map(f => ({
+                url: f.path,
+                filename: f.filename
+            }));
         campground.author = req.user._id;
         await campground.save();
+        console.log(campground)
         req.flash('success','successfully created a new campground')
         res.redirect(`/campgrounds/${campground._id}`);
     }
