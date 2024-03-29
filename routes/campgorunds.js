@@ -5,7 +5,7 @@ const ExpressError = require('../utils/ExpressError');
 const Campground = require('../models/capmgroung');
 const campgrounds = require('../controllers/campgrounds');
 const multer  = require('multer')
-const {storage} = require('../coludinary')
+const {storage} = require('../cloudinary')
 const upload = multer({ storage })
 
 const {isloggedin,validateCampground,isAuthor} = require('../middleware');
@@ -22,7 +22,7 @@ router.get('/new',isloggedin,campgrounds.new)
 
 router.route('/:id')
 .get(catchAsync(campgrounds.show))
-.put(isloggedin,validateCampground,isAuthor,catchAsync(campgrounds.editCamp))
+.put(isloggedin,isAuthor,upload.array('image'),validateCampground,catchAsync(campgrounds.editCamp))
 .delete(isloggedin,catchAsync(campgrounds.deleteCampground))
 
 router.get('/:id/edit',isloggedin,isAuthor,catchAsync(campgrounds.renderEdit))

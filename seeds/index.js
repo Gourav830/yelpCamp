@@ -22,9 +22,43 @@ async function main()
     author : '65f55c7241b4d7ea3ad98eec',
     location : `${cities[random1000].city},${cities[random1000].state}`,
     title:`${sample(descriptors)} ${sample(places)}`,
-    image:'https://source.unsplash.com/collection/483251',
     description : 'ipsum dolor sit amet consectetur adipisicing elit. Earum perferendis, aspernatur minima tempore facilis, expedita fuga suscipit quam ullam fugit, quidem nemo odit. Impedit ad fugiat cupiditate explicabo illum vitae.'
-,price
+,price,
+image: [
+  {
+    url: 'https://res.cloudinary.com/dgluxbumn/image/upload/v1711684102/YelpCamp/ygy1udefcxc6yd5hjysv.png',
+    filename: 'YelpCamp/ygy1udefcxc6yd5hjysv',
+  },
+  {
+    url: 'https://res.cloudinary.com/dgluxbumn/image/upload/v1711684102/YelpCamp/u2rjhs3vsug8tpynilcz.webp',
+    filename: 'YelpCamp/u2rjhs3vsug8tpynilcz',
+  },
+  {
+    url: 'https://res.cloudinary.com/dgluxbumn/image/upload/v1711684112/YelpCamp/oaprrwgswz7p2butjulm.jpg',
+    filename: 'YelpCamp/oaprrwgswz7p2butjulm',
+
+  },
+  {
+    url: 'https://res.cloudinary.com/dgluxbumn/image/upload/v1711684112/YelpCamp/vui0vuskf7dwybtfwlw9.jpg',
+    filename: 'YelpCamp/vui0vuskf7dwybtfwlw9',
+  },
+  {
+    url: 'https://res.cloudinary.com/dgluxbumn/image/upload/v1711684114/YelpCamp/b5bvzdhlwasbthzuldfb.jpg',
+    filename: 'YelpCamp/b5bvzdhlwasbthzuldfb',
+  },
+  {
+    url: 'https://res.cloudinary.com/dgluxbumn/image/upload/v1711684117/YelpCamp/lplsrmryyobn8dsfogy3.jpg',
+    filename: 'YelpCamp/lplsrmryyobn8dsfogy3',
+  },
+  {
+    url: 'https://res.cloudinary.com/dgluxbumn/image/upload/v1711684116/YelpCamp/tt68scobh0uuaartayuk.jpg',
+    filename: 'YelpCamp/tt68scobh0uuaartayuk',
+  },
+  {
+    url: 'https://res.cloudinary.com/dgluxbumn/image/upload/v1711684117/YelpCamp/i7ha9spnsrw307wyldlj.jpg',
+    filename: 'YelpCamp/i7ha9spnsrw307wyldlj',
+  }
+],
    })
    await newCamp.save();
 
