@@ -26,15 +26,15 @@ module.exports.loginUser =(req,res)=>{
     res.render('user/login')
 }
 module.exports.postLoginUser = (req, res) => {
-    req.flash('success', 'welcome back!');
+    req.flash('success', 'Welcome Back !');
     const redirectUrl = req.session.returnTo || '/campgrounds';
-    delete req.session.returnTo;
+    // delete req.session.returnTo;
     res.redirect(redirectUrl);
 }
 module.exports.logout =(req,res,next)=>{
     req.logout((err)=>{
 if(err){return next(err)}
     });
-    req.flash('success','logged you out')
+    req.flash('success','Logged you out')
     res.redirect('/campgrounds')
 }
