@@ -13,21 +13,27 @@ const flash=require('connect-flash')
 const passport = require('passport');
 const LocalStrategy  = require('passport-local')
 const User = require('./models/user')
+const mongoSanitize = require('express-mongo-sanitize');
+const dbUrl = process.env.DB_URL;
+
 
 const userRoutes = require('./routes/user')
 const campgroundRoutes = require('./routes/campgorunds');
 const reviewsRoutes = require('./routes/review');
 
 async function main(){
-    await mongoose.connect('mongodb://127.0.0.1:27017/yelpCamp123');
+    await mongoose.connect(dbUrl);
       console.log("CONNECTION OPEN to mongoose");
 }  main().catch(err => console.log("Error occuredd"));
+
+app.use(mongoSanitize());
 app.use(express.urlencoded({ extended: true}));
 app.use(methodOverride('_method'));
 app.use(express.static(path.join(__dirname,'public')))
 
 
 const sessionConfig = {
+    name:'yoyoddnfku',
 secret :'thisshouldbeabettersecret!',
 resave:false,
 saveUninitialized:true,
@@ -56,15 +62,14 @@ app.use((req,res,next) =>{
     res.locals.error =  req.flash('error')
     next()
 })
-app.get('/fakeUser',async (req,res)=>{
-const user= new user({
-    email:'singlaji1323@gmail.com',
-    username:'singlaji',
-
-})
-const newUser =await User.register(user,'qwerty');
-res.send(newUser)
-})
+// app.get('/fakeUser',async (req,res)=>{
+// const user= new user({
+//     email:'singlaji1323@gmail.com',
+//     username:'singlaji',
+// })
+// const newUser =await User.register(user,'qwerty');
+// res.send(newUser)
+// })
 app.use('/',userRoutes);
 app.use('/campgrounds',campgroundRoutes);
 app.use('/campgrounds/:id/reviews',reviewsRoutes);
