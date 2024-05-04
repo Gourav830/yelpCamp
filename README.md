@@ -3,3 +3,8 @@
 <h1>give it a try - https://cyan-joyous-cocoon.cyclic.app/campgrounds</h1>
 
 This project uses mongo Database,Joi for schema verification
+As we all know verification is a lot important . 
+If no verification is done then there would be database error commming up.
+
+
+this project is not based on react.
